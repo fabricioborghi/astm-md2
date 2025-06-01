@@ -1,90 +1,224 @@
-# Como o arquivo original não é necessário para gerar o novo CSL do zero, vamos apenas criar o novo arquivo
-
-# Estrutura base do novo estilo CSL adaptado para Mendeley Desktop 2019 e instruções do Journal
-new_csl_content = '''<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <style xmlns="http://purl.org/net/xbiblio/csl" version="1.0">
+  <!--
+    Estilo personalizado baseado no ASTM Style Manual 2024.
+    Criado para uso no Mendeley Desktop.
+    Estrutura geral baseada no estilo Vancouver com adaptações.
+    Comentários foram incluídos para facilitar futuras modificações.
+  -->
   <info>
-    <title>ASTM Journal Style (Mendeley 2019 Compatible)</title>
-    <id>http://www.zotero.org/styles/astm-jte-mendeley2019</id>
-    <link href="http://www.zotero.org/styles/astm-jte-mendeley2019" rel="self"/>
+    <title>ASTM Style Manual 2024 (Custom)</title>
+    <id>http://www.zotero.org/styles/astm-style-manual-2024</id>
+    <link href="http://www.astm.org/" rel="documentation"/>
     <author>
-      <name>Adapted by OpenAI</name>
+      <name>Fabricio Borghi (custom via ChatGPT)</name>
     </author>
     <category citation-format="numeric"/>
     <category field="engineering"/>
     <updated>2025-06-01T00:00:00+00:00</updated>
   </info>
 
-  <macro name="author">
-    <names variable="author">
-      <name form="long" initialize-with="." name-as-sort-order="all"/>
-      <et-al term="et-al"/>
-    </names>
-  </macro>
-
-  <macro name="title">
-    <text variable="title" quotes="true"/>
-  </macro>
-
-  <macro name="container-title">
-    <text variable="container-title" font-style="italic"/>
-  </macro>
-
-  <macro name="volume">
+  <!-- Citações numéricas entre colchetes -->
+  
+  <macro name="doi">
     <group>
-      <text value="vol. "/>
-      <text variable="volume"/>
+      <text value="http://doi.org/" />
+      <text variable="DOI"/>
     </group>
   </macro>
 
-  <macro name="issue">
-    <group>
-      <text value="no. "/>
-      <text variable="issue"/>
+  
+  <macro name="chapter">
+    <group delimiter=", ">
+      <text variable="title" quotes="true"/>
+      <text term="in" text-case="lowercase"/>
+      <text variable="container-title" font-style="italic"/>
+      <text term="editor" text-case="lowercase" suffix=" ed."/>
+      <text variable="publisher-place"/>
+      <text variable="publisher"/>
+      <date variable="issued">
+        <date-part name="year"/>
+      </date>
+      <text variable="page" prefix="pp. "/>
     </group>
   </macro>
 
-  <macro name="page">
-    <group>
-      <text value="pp. "/>
-      <text variable="page"/>
+  <macro name="thesis">
+    <group delimiter=", ">
+      <text variable="title" quotes="true"/>
+      <text variable="genre"/>
+      <text variable="publisher"/>
+      <date variable="issued">
+        <date-part name="year"/>
+      </date>
     </group>
   </macro>
 
-  <macro name="issued">
-    <date variable="issued">
-      <date-part name="year"/>
-    </date>
+  <macro name="standard">
+    <group delimiter=", ">
+      <text variable="title" font-style="italic"/>
+      <text variable="publisher"/>
+      <text variable="publisher-place"/>
+      <date variable="issued">
+        <date-part name="year"/>
+      </date>
+    </group>
+  </macro>
+
+  <macro name="patent">
+    <group delimiter=", ">
+      <text variable="title"/>
+      <text variable="number" prefix="U.S. Patent "/>
+      <text variable="submitted" prefix="filed "/>
+      <text variable="issued" prefix="issued "/>
+    </group>
+  </macro>
+
+  <macro name="proceedings">
+    <group delimiter=", ">
+      <text variable="title" quotes="true"/>
+      <text variable="event"/>
+      <text variable="event-place"/>
+      <date variable="issued">
+        <date-part name="month"/> <date-part name="day"/>, <date-part name="year"/>
+      </date>
+    </group>
   </macro>
 
   <citation>
-    <layout delimiter=", ">
-      <text variable="citation-number" vertical-align="sup"/>
-    </layout>
+    
+
+<layout suffix=".">
+  <text variable="citation-number" prefix="[" suffix="] "/>
+  <names variable="author">
+    <name form="short" initialize-with="." name-as-sort-order="all"/>
+    <et-al term="et-al"/>
+  </names>
+  <choose>
+    <if type="article-journal">
+      <group delimiter=", ">
+        <text variable="title" quotes="true"/>
+        <text variable="container-title" font-style="italic"/>
+        <text variable="volume" prefix="vol. "/>
+        <text variable="issue" prefix="no. "/>
+        <text variable="page" prefix="pp. "/>
+        <date variable="issued">
+          <date-part name="year"/>
+        </date>
+        <group>
+          <text value="http://doi.org/"/>
+          <text variable="DOI"/>
+        </group>
+      </group>
+    </if>
+    <else-if type="book thesis report" match="any">
+      <group delimiter=", ">
+        <text variable="title" font-style="italic"/>
+        <text variable="collection-title"/>
+        <text variable="publisher"/>
+        <text variable="publisher-place"/>
+        <date variable="issued">
+          <date-part name="year"/>
+        </date>
+        <group>
+          <text value="http://doi.org/"/>
+          <text variable="DOI"/>
+        </group>
+      </group>
+    </else-if>
+    <else>
+      <group delimiter=", ">
+        <text variable="title" quotes="true"/>
+        <text variable="container-title" font-style="italic"/>
+        <text variable="collection-title"/>
+        <text variable="publisher"/>
+        <text variable="publisher-place"/>
+        <text variable="volume" prefix="vol. "/>
+        <text variable="issue" prefix="no. "/>
+        <text variable="page" prefix="pp. "/>
+        <text variable="genre"/>
+        <date variable="issued">
+          <date-part name="year"/>
+        </date>
+        <group>
+          <text value="http://doi.org/"/>
+          <text variable="DOI"/>
+        </group>
+      </group>
+    </else>
+  </choose>
+</layout>
+
+
   </citation>
 
-  <bibliography>
-    <layout suffix=".">
-      <group delimiter=". ">
-        <text macro="author"/>
-        <text macro="title"/>
-        <text macro="container-title"/>
-        <text macro="volume"/>
-        <text macro="issue"/>
-        <text macro="page"/>
-        <text macro="issued"/>
+  <!-- Estrutura básica de bibliografia -->
+  <bibliography et-al-min="4" et-al-use-first="3" second-field-align="flush">
+    
+
+
+<layout suffix=".">
+  <text variable="citation-number" prefix="[" suffix="] "/>
+  <names variable="author">
+    <name form="short" initialize-with="." name-as-sort-order="all"/>
+    <et-al term="et-al"/>
+  </names>
+  <choose>
+    <if type="article-journal">
+      <group delimiter=", ">
+        <text variable="title" quotes="true"/>
+        <text variable="container-title" font-style="italic"/>
+        <text variable="volume" prefix="vol. "/>
+        <text variable="issue" prefix="no. "/>
+        <text variable="page" prefix="pp. "/>
+        <date variable="issued">
+          <date-part name="year"/>
+        </date>
+        <group>
+          <text value="http://doi.org/"/>
+          <text variable="DOI"/>
+        </group>
       </group>
-      <group delimiter=" ">
-        <text value="http://doi.org/"/>
-        <text variable="DOI"/>
+    </if>
+    <else-if type="book thesis report" match="any">
+      <group delimiter=", ">
+        <text variable="title" font-style="italic"/>
+        <text variable="collection-title"/>
+        <text variable="publisher"/>
+        <text variable="publisher-place"/>
+        <date variable="issued">
+          <date-part name="year"/>
+        </date>
+        <group>
+          <text value="http://doi.org/"/>
+          <text variable="DOI"/>
+        </group>
       </group>
-    </layout>
+    </else-if>
+    <else>
+      <group delimiter=", ">
+        <text variable="title" quotes="true"/>
+        <text variable="container-title" font-style="italic"/>
+        <text variable="collection-title"/>
+        <text variable="publisher"/>
+        <text variable="publisher-place"/>
+        <text variable="volume" prefix="vol. "/>
+        <text variable="issue" prefix="no. "/>
+        <text variable="page" prefix="pp. "/>
+        <text variable="genre"/>
+        <date variable="issued">
+          <date-part name="year"/>
+        </date>
+        <group>
+          <text value="http://doi.org/"/>
+          <text variable="DOI"/>
+        </group>
+      </group>
+    </else>
+  </choose>
+</layout>
+
+
+
   </bibliography>
 </style>
-'''
-
-# Caminho de saída
-output_path = Path("/mnt/data/astm-style-mendeley2019-final.csl")
-output_path.write_text(new_csl_content)
-
-output_path.name

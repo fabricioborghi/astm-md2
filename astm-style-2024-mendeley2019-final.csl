@@ -1,38 +1,90 @@
-from pathlib import Path
-import re
+# Como o arquivo original não é necessário para gerar o novo CSL do zero, vamos apenas criar o novo arquivo
 
-# Caminho do arquivo original
-uploaded_path = Path("/mnt/data/astm-style-2024-CSL-extended.csl")
-csl_content = uploaded_path.read_text()
+# Estrutura base do novo estilo CSL adaptado para Mendeley Desktop 2019 e instruções do Journal
+new_csl_content = '''<?xml version="1.0" encoding="utf-8"?>
+<style xmlns="http://purl.org/net/xbiblio/csl" version="1.0">
+  <info>
+    <title>ASTM Journal Style (Mendeley 2019 Compatible)</title>
+    <id>http://www.zotero.org/styles/astm-jte-mendeley2019</id>
+    <link href="http://www.zotero.org/styles/astm-jte-mendeley2019" rel="self"/>
+    <author>
+      <name>Adapted by OpenAI</name>
+    </author>
+    <category citation-format="numeric"/>
+    <category field="engineering"/>
+    <updated>2025-06-01T00:00:00+00:00</updated>
+  </info>
 
-# Novo layout adaptado para Mendeley Desktop 2019 e diretrizes do Journal of Testing and Evaluation (ASTM)
-adapted_layout = """
-<layout suffix=".">
-  <text variable="citation-number" vertical-align="sup"/>
-  <text macro="author"/>
-  <group delimiter=". ">
-    <text macro="title"/>
-    <text macro="container-title"/>
-    <text macro="publisher"/>
-    <text macro="publisher-place"/>
-    <text macro="volume"/>
-    <text macro="issue"/>
-    <text macro="page"/>
-    <text macro="issued"/>
-  </group>
-  <group delimiter=" ">
-    <text value="http://doi.org/"/>
-    <text variable="DOI"/>
-  </group>
-</layout>
-"""
+  <macro name="author">
+    <names variable="author">
+      <name form="long" initialize-with="." name-as-sort-order="all"/>
+      <et-al term="et-al"/>
+    </names>
+  </macro>
 
-# Substitui a seção <layout> do arquivo CSL original
-layout_pattern = re.compile(r'<layout.+?</layout>', re.DOTALL)
-csl_adapted = re.sub(layout_pattern, adapted_layout, csl_content)
+  <macro name="title">
+    <text variable="title" quotes="true"/>
+  </macro>
 
-# Salva novo arquivo com layout compatível
-output_path = Path("/mnt/data/astm-style-mendeley2019-final-compatible.csl")
-output_path.write_text(csl_adapted)
+  <macro name="container-title">
+    <text variable="container-title" font-style="italic"/>
+  </macro>
+
+  <macro name="volume">
+    <group>
+      <text value="vol. "/>
+      <text variable="volume"/>
+    </group>
+  </macro>
+
+  <macro name="issue">
+    <group>
+      <text value="no. "/>
+      <text variable="issue"/>
+    </group>
+  </macro>
+
+  <macro name="page">
+    <group>
+      <text value="pp. "/>
+      <text variable="page"/>
+    </group>
+  </macro>
+
+  <macro name="issued">
+    <date variable="issued">
+      <date-part name="year"/>
+    </date>
+  </macro>
+
+  <citation>
+    <layout delimiter=", ">
+      <text variable="citation-number" vertical-align="sup"/>
+    </layout>
+  </citation>
+
+  <bibliography>
+    <layout suffix=".">
+      <group delimiter=". ">
+        <text macro="author"/>
+        <text macro="title"/>
+        <text macro="container-title"/>
+        <text macro="volume"/>
+        <text macro="issue"/>
+        <text macro="page"/>
+        <text macro="issued"/>
+      </group>
+      <group delimiter=" ">
+        <text value="http://doi.org/"/>
+        <text variable="DOI"/>
+      </group>
+    </layout>
+  </bibliography>
+</style>
+'''
+
+# Caminho de saída
+output_path = Path("/mnt/data/astm-style-mendeley2019-final.csl")
+output_path.write_text(new_csl_content)
 
 output_path.name
